@@ -1,0 +1,62 @@
+#!/bin/sh
+#
+#redis - Startup script for redis
+#
+# chkconfig: - 85 15
+# description: Redis database.
+# processname: redis
+# Source function library
+
+. /etc/rc.d/init.d/functions
+# OPTIONS
+OPTIONS=" /etc/redis.conf"
+#CMD
+redis="/usr/local/bin/redis-server"
+	lockfile=/var/lock/subsys/redis
+start()
+{
+	echo -n $"Starting redis: "
+		daemon $redis $OPTIONS
+		RETVAL=$?
+		echo
+		[ $RETVAL -eq 0 ] && touch $lockfile
+}
+
+stop()
+{
+	echo -n $"Stopping redis: "
+		killproc $redis -QUIT
+		RETVAL=$?
+		echo
+		[ $RETVAL -eq 0 ] && rm -f $lockfile
+}
+
+restart () {
+	stop
+		start
+}
+ulimit -n 12000
+RETVAL=0
+
+case "$1" in
+start)
+start
+;;
+stop)
+stop
+;;
+restart|reload|force-reload)
+restart
+;;
+condrestart)
+[ -f $lockfile ] && restart || :
+;;
+status)
+status $redis
+RETVAL=$?
+;;
+*)
+echo "Usage: $0 {start|stop|status|restart|reload|force-reload|condrestart}"
+RETVAL=1
+esac
+exit $RETVAL

@@ -2,5 +2,6 @@
 /etc/init.d/nginx start
 /etc/init.d/php-fpm start
 /etc/init.d/mariadb start
-/usr/local/bin/redis-server /etc/redis.conf
+/etc/init.d/redis start
+#/etc/init.d/mongo start
 /bin/bash
